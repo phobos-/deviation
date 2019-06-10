@@ -277,7 +277,6 @@ break;
                 redpine_data_frame();
                 status_send++;
             }
-            
         }
 
         CC2500_Strobe(CC2500_SIDLE);
@@ -317,7 +316,7 @@ static const u8 init_data[][3] = {
     {CC2500_10_MDMCFG4,   0x2D, 0x7B},
     {CC2500_11_MDMCFG3,   0x3B, 0x61},
     {CC2500_12_MDMCFG2,   0x73, 0x13},
-    #ifdef REDPINE_FEC    
+    #ifdef REDPINE_FEC
         {CC2500_13_MDMCFG1,   0xA3, 0xA3},
     #else
         {CC2500_13_MDMCFG1,   0x23, 0x23},
