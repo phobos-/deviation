@@ -29,7 +29,6 @@ static const char * const redpine_opts[] = {
   _tr_noop("Format"),  "Fast", "Slow", NULL,
   _tr_noop("Fast .1ms"),  "1", "250", NULL,
   _tr_noop("Slow 1ms"),  "1", "250", NULL,
-  _tr_noop("PacketSize"),  "14", "100", NULL,
   _tr_noop("VTX Band"),  "A", "B", "E", "F", "R",  NULL,
   _tr_noop("VTX Channel"),  "1", "8", NULL,
   _tr_noop("VTX Power"),  "0", "4", NULL,
@@ -40,7 +39,6 @@ enum {
     PROTO_OPTS_FORMAT,
     PROTO_OPTS_LOOPTIME_FAST,
     PROTO_OPTS_LOOPTIME_SLOW,
-    PROTO_OPTS_PACKETSIZE,
     PROTO_OPTS_VTX_BAND,
     PROTO_OPTS_VTX_CHANNEL,
     PROTO_OPTS_VTX_POWER,
@@ -50,7 +48,7 @@ enum {
 ctassert(LAST_PROTO_OPT <= NUM_PROTO_OPTS, too_many_protocol_opts);
 
 #define PACKET_SIZE 11
-#define REDPINE_FEC false  // from cc2500 datasheet: The convolutional coder is a rate 1/2 code with a constraint length of m=4
+//#define REDPINE_FEC   // from cc2500 datasheet: The convolutional coder is a rate 1/2 code with a constraint length of m=4
 #define NUM_HOPS 50
 
 // Statics are not initialized on 7e so in initialize() if necessary
@@ -308,21 +306,21 @@ static const u8 init_data[][3] = {
     {CC2500_07_PKTCTRL1,  0x04, 0x04},
     {CC2500_08_PKTCTRL0,  0x05, 0x05},
     {CC2500_09_ADDR,      0x00, 0x00},
-    {CC2500_0B_FSCTRL1,   0x0A, 0x0A},
+    {CC2500_0B_FSCTRL1,   0x0A, 0x06},
     {CC2500_0C_FSCTRL0,   0x00, 0x00},
-    {CC2500_0D_FREQ2,     0x5D, 0x5c},
-    {CC2500_0E_FREQ1,     0x93, 0x76},
-    {CC2500_0F_FREQ0,     0xB1, 0x27},
-    {CC2500_10_MDMCFG4,   0x2D, 0x7B},
-    {CC2500_11_MDMCFG3,   0x3B, 0x61},
-    {CC2500_12_MDMCFG2,   0x73, 0x13},
+    {CC2500_0D_FREQ2,     0x5D, 0x5D},
+    {CC2500_0E_FREQ1,     0x93, 0x93},
+    {CC2500_0F_FREQ0,     0xB1, 0xB1},
+    {CC2500_10_MDMCFG4,   0x2D, 0x78},
+    {CC2500_11_MDMCFG3,   0x3B, 0x93},
+    {CC2500_12_MDMCFG2,   0x73, 0x03},
     #ifdef REDPINE_FEC
-        {CC2500_13_MDMCFG1,   0xA3, 0xA3},
+        {CC2500_13_MDMCFG1,   0xA3, 0xA2},
     #else
-        {CC2500_13_MDMCFG1,   0x23, 0x23},
+        {CC2500_13_MDMCFG1,   0x23, 0x22},
     #endif
-    {CC2500_14_MDMCFG0,   0x56, 0x7a},  // Chan space
-    {CC2500_15_DEVIATN,   0x00, 0x51},
+    {CC2500_14_MDMCFG0,   0x56, 0xF8},  // Chan space
+    {CC2500_15_DEVIATN,   0x00, 0x44},
     {CC2500_17_MCSM1,     0x0c, 0x0c},
     {CC2500_18_MCSM0,     0x18, 0x18},
     {CC2500_19_FOCCFG,    0x1D, 0x16},
@@ -349,8 +347,6 @@ static const u8 init_data_shared[][2] = {
 
 static void redpine_init(unsigned int format) {
   CC2500_Reset();
-
-
 
   CC2500_WriteReg(CC2500_06_PKTLEN, PACKET_SIZE);
 
@@ -461,7 +457,7 @@ uintptr_t REDPINE_Cmds(enum ProtoCmds cmd)
                 Model.proto_opts[PROTO_OPTS_LOOPTIME_FAST] = 20;  // if not set, default to no gain
             }
             if (!Model.proto_opts[PROTO_OPTS_LOOPTIME_SLOW]) {
-                Model.proto_opts[PROTO_OPTS_LOOPTIME_SLOW] = 9;  // if not set, default to no gain
+                Model.proto_opts[PROTO_OPTS_LOOPTIME_SLOW] = 19;  // if not set, default to no gain
             }
             Model.proto_opts[PROTO_OPTS_VTX_SEND] = 0;  // if not set, default to no gain
 
