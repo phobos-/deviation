@@ -48,7 +48,7 @@ enum {
 ctassert(LAST_PROTO_OPT <= NUM_PROTO_OPTS, too_many_protocol_opts);
 
 #define PACKET_SIZE 11
-//#define REDPINE_FEC   // from cc2500 datasheet: The convolutional coder is a rate 1/2 code with a constraint length of m=4
+#define REDPINE_FEC_SLOW   // from cc2500 datasheet: The convolutional coder is a rate 1/2 code with a constraint length of m=4
 #define NUM_HOPS 50
 
 // Statics are not initialized on 7e so in initialize() if necessary
@@ -314,8 +314,8 @@ static const u8 init_data[][3] = {
     {CC2500_10_MDMCFG4,   0x2D, 0x78},
     {CC2500_11_MDMCFG3,   0x3B, 0x93},
     {CC2500_12_MDMCFG2,   0x73, 0x03},
-    #ifdef REDPINE_FEC
-        {CC2500_13_MDMCFG1,   0xA3, 0xA2},
+    #ifdef REDPINE_FEC_SLOW
+        {CC2500_13_MDMCFG1,   0x23, 0xA2},
     #else
         {CC2500_13_MDMCFG1,   0x23, 0x22},
     #endif
