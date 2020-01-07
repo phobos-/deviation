@@ -403,7 +403,6 @@ static void initialize(int bind)
     u32 idx = 0;
     u32 rnd = get_tx_id();
     #define MAX_RF_CHANNEL 255
-    hop_data[idx++] = 1;
     while (idx < sizeof(hop_data)-1) {
         u32 i;
         rnd = rnd * 0x0019660D + 0x3C6EF35F;  // Randomization
@@ -412,7 +411,7 @@ static void initialize(int bind)
         // Check that it's not duplicate nor adjacent nor channel 0 or 1
         for (i = 0; i < idx; i++) {
             u8 ch = hop_data[i];
-            if ((ch <= next_ch + 1) && (ch >= next_ch - 1) && (ch > 1)) {
+            if ((ch <= next_ch + 1) && (ch >= next_ch - 1) && (ch >= 1)) {
                 break;
             }
         }
